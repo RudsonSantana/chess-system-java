@@ -1,7 +1,12 @@
 package chess;
 
 import boardgame.Board;
+import boardgame.Piece;
+import boardgame.Position;
+import chess.pieces.Bishop;
+import chess.pieces.Horse;
 import chess.pieces.King;
+import chess.pieces.Queen;
 import chess.pieces.Rook;
 
 public class ChessMatch {
@@ -23,14 +28,48 @@ public class ChessMatch {
 		return mat;
 	}
 	
+	public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
+		Position source = sourcePosition.toPosition();
+		Position target = targetPosition.toPosition();
+		validateSourcePosition(source);
+		Piece capturedPiece = makeMovie(source, target);
+		return (ChessPiece)capturedPiece;
+	}
+	
+	private void validateSourcePosition(Position position) {
+		if(!board.thereIsAPiece(position)) {
+			throw new ChessException("There is not piece on source position");
+		}
+	}
+	
+	private Piece makeMovie(Position source, Position target) {
+		Piece p = board.removePiece(source);
+		Piece capturedPiece = board.removePiece(target);
+		board.placePiece(p, target);
+		return capturedPiece;
+	}
+	
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 	}
 	
-	private void initialSetup() {
-		placeNewPiece('b', 6, new Rook(board, Color.WHITE));
-		placeNewPiece('e', 8, new King(board, Color.BLACK));
+	private void initialSetup() {	
 		placeNewPiece('e', 1, new King(board, Color.WHITE));
-//		placeNewPiece('e', 1, new King(board, Color.BLACK));
+		placeNewPiece('d', 1, new Queen(board, Color.WHITE));
+		placeNewPiece('c', 1, new Bishop(board, Color.WHITE));
+		placeNewPiece('f', 1, new Bishop(board, Color.WHITE));
+		placeNewPiece('b', 1, new Horse(board, Color.WHITE));
+		placeNewPiece('g', 1, new Horse(board, Color.WHITE));
+		placeNewPiece('a', 1, new Rook(board, Color.WHITE));
+		placeNewPiece('h', 1, new Rook(board, Color.WHITE));
+		
+		placeNewPiece('e', 8, new King(board, Color.BLACK));
+		placeNewPiece('d', 8, new Queen(board, Color.BLACK));
+		placeNewPiece('c', 8, new Bishop(board, Color.BLACK));
+		placeNewPiece('f', 8, new Bishop(board, Color.BLACK));
+		placeNewPiece('b', 8, new Horse(board, Color.BLACK));
+		placeNewPiece('g', 8, new Horse(board, Color.BLACK));
+		placeNewPiece('a', 8, new Rook(board, Color.BLACK));
+		placeNewPiece('h', 8, new Rook(board, Color.BLACK));
 	}
 }
